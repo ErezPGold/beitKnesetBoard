@@ -10,7 +10,7 @@
         TextOptions.TextFormattingMode="Ideal"
         TextOptions.TextRenderingMode="ClearType">
     <Window.Background>
-        <SolidColorBrush Color="#FFF8F9F0"/>
+        <SolidColorBrush Color="#0F1428"/>
     </Window.Background>
 
     <Window.Resources>
@@ -34,161 +34,235 @@
             <Setter Property="FontWeight" Value="SemiBold"/>
             <Setter Property="TextWrapping" Value="Wrap"/>
         </Style>
-        <SolidColorBrush x:Key="BrandBurgundy" Color="#6B1F2A"/>
-        <SolidColorBrush x:Key="BrandOrange" Color="#E8842C"/>
-        <SolidColorBrush x:Key="BrandOrangeLight" Color="#F5A623"/>
-        <SolidColorBrush x:Key="BrandDark" Color="#2B0F12"/>
     </Window.Resources>
 
-
     <Grid Margin="40">
-       
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
-            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <!-- כותרת + שעון ענק -->
+        <!-- ================= כותרת + שעון (קבוע בכל המסכים) ================= -->
         <Grid Grid.Row="0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
             <StackPanel VerticalAlignment="Center">
-                <TextBlock Text="לוח יומי בית כנסת אוהל יעקב" FontSize="56" FontWeight="Bold" Foreground="#6B1F2A"/>
-                <TextBlock Text="{Binding HebrewDate}" FontSize="40" Foreground="#2B0F12" Margin="0,6,0,0"/>
-                <TextBlock Text="{Binding GregorianDate}" FontSize="26" Foreground="#6B1F2A"/>
+                <TextBlock Text="לוח יומי בית כנסת אוהל יעקב" FontSize="52" FontWeight="Bold" Foreground="#FFD27A"/>
+                <TextBlock Text="{Binding HebrewDate}" FontSize="36" Foreground="White" Margin="0,6,0,0"/>
+                <TextBlock Text="{Binding GregorianDate}" FontSize="22" Foreground="#8AA0C8"/>
             </StackPanel>
             <TextBlock Grid.Column="1"
                        Text="{Binding Clock}"
-                       FontSize="150" FontWeight="Bold" Foreground="#6B1F2A"
+                       FontSize="130" FontWeight="Bold" Foreground="#FFD27A"
                        VerticalAlignment="Center" Margin="20,0,0,0"
                        FontFamily="Consolas, Segoe UI"/>
         </Grid>
 
-        <!-- באנר שבת מברכים -->
-        <Border Grid.Row="1" Margin="8,16,8,0"
-                Background="#3A2A0E" BorderBrush="#FFD27A" BorderThickness="2"
-                CornerRadius="14" Padding="20"
-                Visibility="{Binding IsShabbatMevarchim, Converter={StaticResource BoolToVis}}">
-            <StackPanel>
-                <TextBlock Text="{Binding ShabbatMevarchimText}"
-                           FontSize="44" FontWeight="Bold" Foreground="#FFD27A"
-                           HorizontalAlignment="Center"/>
-                <TextBlock Text="{Binding MoladText}"
-                           FontSize="30" Foreground="White" Margin="0,8,0,0"
-                           HorizontalAlignment="Center"/>
-            </StackPanel>
-        </Border>
+        <!-- ================= אזור תוכן מתחלף ================= -->
+        <Grid Grid.Row="1" Margin="0,20,0,0">
 
-        <!-- פרשה + הפטרה + תפילות -->
-        <Grid Grid.Row="2" Margin="0,10,0,0">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
-            <Border Style="{StaticResource Card}" Grid.Column="0">
-                <StackPanel>
-                    <TextBlock Style="{StaticResource Label}" Text="פרשת השבוע"/>
-                    <TextBlock Style="{StaticResource Value}" Text="{Binding Parasha}" FontSize="54" />
-                </StackPanel>
-            </Border>
-            <Border Style="{StaticResource Card}" Grid.Column="1">
-                <StackPanel>
-                    <TextBlock Style="{StaticResource Label}" Text="הפטרה"/>
-                    <TextBlock Style="{StaticResource Value}" Text="{Binding Haftarah}" FontSize="40"/>
-                </StackPanel>
-            </Border>
-            <Border Style="{StaticResource Card}" Grid.Column="2">
-                <StackPanel>
-                    <TextBlock Style="{StaticResource Label}" Text="זמני תפילה"/>
-                    <TextBlock Style="{StaticResource Value}" Text="{Binding Prayers}" FontSize="42"/>
-                </StackPanel>
-            </Border>
-        </Grid>
+            <!-- ===== דשבורד ראשי ===== -->
+            <Grid Visibility="{Binding IsDashboardVisible, Converter={StaticResource BoolToVis}}">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
 
-        <!-- שיעורים יומיים -->
-        <Grid Grid.Row="3" Margin="0,10,0,0">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="*"/>
-            </Grid.RowDefinitions>
+                <!-- באנר שבת מברכים -->
+                <Border Grid.Row="0" Margin="8,0,8,0"
+                        Background="#3A2A0E" BorderBrush="#FFD27A" BorderThickness="2"
+                        CornerRadius="14" Padding="20"
+                        Visibility="{Binding IsShabbatMevarchim, Converter={StaticResource BoolToVis}}">
+                    <StackPanel>
+                        <TextBlock Text="{Binding ShabbatMevarchimText}"
+                                   FontSize="40" FontWeight="Bold" Foreground="#FFD27A"
+                                   HorizontalAlignment="Center"/>
+                        <TextBlock Text="{Binding MoladText}"
+                                   FontSize="26" Foreground="White" Margin="0,8,0,0"
+                                   HorizontalAlignment="Center"/>
+                    </StackPanel>
+                </Border>
 
-            <Border Style="{StaticResource Card}" Grid.Row="0" Grid.Column="0">
-                <StackPanel>
-                    <TextBlock Style="{StaticResource Label}" Text="תהילים יומי"/>
-                    <TextBlock Style="{StaticResource Value}" Text="{Binding Tehillim}"/>
-                </StackPanel>
-            </Border>
-            <Border Style="{StaticResource Card}" Grid.Row="0" Grid.Column="1">
-                <StackPanel>
-                    <TextBlock Style="{StaticResource Label}" Text="חומש יומי"/>
-                    <TextBlock Style="{StaticResource Value}" Text="{Binding Chumash}"/>
-                </StackPanel>
-            </Border>
-            <Border Style="{StaticResource Card}" Grid.Row="0" Grid.Column="2">
-                <StackPanel>
-                    <TextBlock Style="{StaticResource Label}" Text="דף יומי"/>
-                    <Viewbox Stretch="Uniform" StretchDirection="DownOnly" MaxHeight="80">
-                        <TextBlock Style="{StaticResource Value}"
-                       Text="{Binding DafYomi}"
-                       TextWrapping="Wrap"
-                       TextAlignment="Center"/>
-                    </Viewbox>
-                </StackPanel>
-            </Border>
-
-           
-
-            <Border Style="{StaticResource Card}" Grid.Row="1" Grid.Column="0">
-                <StackPanel>
-                    <TextBlock Style="{StaticResource Label}" Text="רמב״ם (3 פרקים)"/>
-                    <TextBlock Style="{StaticResource Value}" Text="{Binding Rambam}"/>
-                </StackPanel>
-            </Border>
-            <Border Style="{StaticResource Card}" Grid.Row="1" Grid.Column="1">
-                <StackPanel>
-                    <TextBlock Style="{StaticResource Label}" Text="תניא"/>
-                    <TextBlock Style="{StaticResource Value}" Text="{Binding Tanya}"/>
-                </StackPanel>
-            </Border>
-            <Border Style="{StaticResource Card}" Grid.Row="1" Grid.Column="2">
-                <StackPanel>
-                    <TextBlock Style="{StaticResource Label}" Text="היום יום"/>
-                    <TextBlock Style="{StaticResource Value}" Text="{Binding HayomYom}"/>
-                </StackPanel>
-            </Border>
-        </Grid>
-
-        <!-- זמני היום -->
-        <Border Grid.Row="4" Style="{StaticResource Card}" Margin="12,20,12,0">
-            <ItemsControl ItemsSource="{Binding Zmanim}">
-                <ItemsControl.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <UniformGrid Rows="1"/>
-                    </ItemsPanelTemplate>
-                </ItemsControl.ItemsPanel>
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate>
-                        <StackPanel HorizontalAlignment="Center" Margin="10">
-                            <TextBlock Text="{Binding Name}" Style="{StaticResource Label}"
-                                       HorizontalAlignment="Center"/>
-                            <TextBlock Text="{Binding Time}" Foreground="#87CEFA"
-                                       FontSize="46" FontWeight="Bold"
-                                       HorizontalAlignment="Center"/>
+                <!-- פרשה + הפטרה + טל/גשם -->
+                <Grid Grid.Row="1" Margin="0,10,0,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Border Style="{StaticResource Card}" Grid.Column="0">
+                        <StackPanel>
+                            <TextBlock Style="{StaticResource Label}" Text="פרשת השבוע"/>
+                            <TextBlock Style="{StaticResource Value}" Text="{Binding Parasha}" FontSize="48"/>
                         </StackPanel>
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>
-            </ItemsControl>
-        </Border>
+                    </Border>
+                    <Border Style="{StaticResource Card}" Grid.Column="1">
+                        <StackPanel>
+                            <TextBlock Style="{StaticResource Label}" Text="הפטרה"/>
+                            <TextBlock Style="{StaticResource Value}" Text="{Binding Haftarah}" FontSize="36"/>
+                        </StackPanel>
+                    </Border>
+                    <Border Style="{StaticResource Card}" Grid.Column="2">
+                        <StackPanel>
+                            <TextBlock Style="{StaticResource Label}" Text="נוסח התפילה"/>
+                            <TextBlock Style="{StaticResource Value}" Text="{Binding GeshemText}" FontSize="26"/>
+                            <TextBlock Style="{StaticResource Value}" Text="{Binding TalText}" FontSize="26" Margin="0,10,0,0"/>
+                        </StackPanel>
+                    </Border>
+                </Grid>
+
+                <!-- שיעורים יומיים -->
+                <Grid Grid.Row="2" Margin="0,10,0,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <Border Style="{StaticResource Card}" Grid.Row="0" Grid.Column="0">
+                        <StackPanel>
+                            <TextBlock Style="{StaticResource Label}" Text="תהילים יומי"/>
+                            <TextBlock Style="{StaticResource Value}" Text="{Binding Tehillim}"/>
+                        </StackPanel>
+                    </Border>
+                    <Border Style="{StaticResource Card}" Grid.Row="0" Grid.Column="1">
+                        <StackPanel>
+                            <TextBlock Style="{StaticResource Label}" Text="חומש יומי"/>
+                            <TextBlock Style="{StaticResource Value}" Text="{Binding Chumash}"/>
+                        </StackPanel>
+                    </Border>
+                    <Border Style="{StaticResource Card}" Grid.Row="0" Grid.Column="2">
+                        <StackPanel>
+                            <TextBlock Style="{StaticResource Label}" Text="דף יומי"/>
+                            <Viewbox Stretch="Uniform" StretchDirection="DownOnly" MaxHeight="80">
+                                <TextBlock Style="{StaticResource Value}"
+                                           Text="{Binding DafYomi}"
+                                           TextWrapping="Wrap"
+                                           TextAlignment="Center"/>
+                            </Viewbox>
+                        </StackPanel>
+                    </Border>
+
+                    <Border Style="{StaticResource Card}" Grid.Row="1" Grid.Column="0">
+                        <StackPanel>
+                            <TextBlock Style="{StaticResource Label}" Text="רמב״ם (3 פרקים)"/>
+                            <TextBlock Style="{StaticResource Value}" Text="{Binding Rambam}"/>
+                        </StackPanel>
+                    </Border>
+                    <Border Style="{StaticResource Card}" Grid.Row="1" Grid.Column="1">
+                        <StackPanel>
+                            <TextBlock Style="{StaticResource Label}" Text="תניא"/>
+                            <TextBlock Style="{StaticResource Value}" Text="{Binding Tanya}"/>
+                        </StackPanel>
+                    </Border>
+                    <Border Style="{StaticResource Card}" Grid.Row="1" Grid.Column="2">
+                        <StackPanel>
+                            <TextBlock Style="{StaticResource Label}" Text="היום יום"/>
+                            <TextBlock Style="{StaticResource Value}" Text="{Binding HayomYom}"/>
+                        </StackPanel>
+                    </Border>
+                </Grid>
+
+                <!-- זמני היום -->
+                <Border Grid.Row="3" Style="{StaticResource Card}" Margin="12,20,12,0">
+                    <ItemsControl ItemsSource="{Binding Zmanim}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <UniformGrid Rows="1"/>
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel HorizontalAlignment="Center" Margin="10">
+                                    <TextBlock Text="{Binding Name}" Style="{StaticResource Label}"
+                                               HorizontalAlignment="Center"/>
+                                    <TextBlock Text="{Binding Time}" Foreground="#87CEFA"
+                                               FontSize="42" FontWeight="Bold"
+                                               HorizontalAlignment="Center"/>
+                                </StackPanel>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </Border>
+            </Grid>
+
+            <!-- ===== מסך תזכורת / הלכה ===== -->
+            <Border Style="{StaticResource Card}" Margin="0"
+                    Visibility="{Binding IsReminderVisible, Converter={StaticResource BoolToVis}}">
+                <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Margin="60">
+                    <TextBlock Text="{Binding ReminderTitle}"
+                               FontSize="100" FontWeight="Bold" Foreground="#FFD27A"
+                               TextAlignment="Center" TextWrapping="Wrap"/>
+                    <TextBlock Text="{Binding ReminderBody}"
+                               FontSize="56" Foreground="White"
+                               TextAlignment="Center" TextWrapping="Wrap"
+                               Margin="0,50,0,0"/>
+                </StackPanel>
+            </Border>
+
+            <!-- ===== מסך זמני תפילות ===== -->
+            <Border Style="{StaticResource Card}" Margin="0"
+                    Visibility="{Binding IsPrayerTimesVisible, Converter={StaticResource BoolToVis}}">
+                <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Margin="60">
+                    <TextBlock Text="זמני התפילות"
+                               FontSize="100" FontWeight="Bold" Foreground="#FFD27A"
+                               TextAlignment="Center"/>
+                    <TextBlock Text="{Binding Prayers}"
+                               FontSize="64" Foreground="White"
+                               TextAlignment="Center" TextWrapping="Wrap"
+                               Margin="0,50,0,0"/>
+                </StackPanel>
+            </Border>
+
+            <!-- ===== מסך לזכות ===== -->
+            <Border Style="{StaticResource Card}" Margin="0"
+                    Visibility="{Binding IsRefuahVisible, Converter={StaticResource BoolToVis}}">
+                <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Margin="60">
+                    <TextBlock Text="לזכות רפואה שלמה והצלחה"
+                               FontSize="88" FontWeight="Bold" Foreground="#FFD27A"
+                               TextAlignment="Center"/>
+                    <ItemsControl ItemsSource="{Binding RefuahList}" Margin="0,40,0,0"
+                                  HorizontalAlignment="Center">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding}"
+                                           FontSize="56" Foreground="White"
+                                           TextAlignment="Center"
+                                           Margin="0,10"/>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </StackPanel>
+            </Border>
+
+            <!-- ===== מסך לעילוי נשמה ===== -->
+            <Border Style="{StaticResource Card}" Margin="0"
+                    Visibility="{Binding IsNeshamaVisible, Converter={StaticResource BoolToVis}}">
+                <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Margin="60">
+                    <TextBlock Text="לעילוי נשמת"
+                               FontSize="88" FontWeight="Bold" Foreground="#FFD27A"
+                               TextAlignment="Center"/>
+                    <ItemsControl ItemsSource="{Binding NeshamaList}" Margin="0,40,0,0"
+                                  HorizontalAlignment="Center">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding}"
+                                           FontSize="56" Foreground="White"
+                                           TextAlignment="Center"
+                                           Margin="0,10"/>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </StackPanel>
+            </Border>
+        </Grid>
     </Grid>
 </Window>

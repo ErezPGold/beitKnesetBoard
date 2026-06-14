@@ -18,7 +18,7 @@ namespace BeitKnessetDisplay
         private readonly ZmanimService _zmanim = new(lat: 32.08, lng: 34.78, elevation: 0);
 
         // ===== עמודים מתחלפים =====
-        // עמוד 0 = הדשבורד הרגיל. כל השאר = תזכורות / זכויות / נשמות.
+        // עמוד 0 = דשבורד. אח"כ: תזכורות, זמני תפילות, לזכות, לעילוי נשמה.
 
         public static readonly IReadOnlyList<ReminderPage> Reminders = new List<ReminderPage>
         {
@@ -34,14 +34,14 @@ namespace BeitKnessetDisplay
                 "מנהג ישראל לתת צדקה לפני התפילה — \"ואני בצדק אחזה פניך\""),
         };
 
-        // שמות לזכות רפואה שלמה / הצלחה — ערוך בחופשיות
+        // שמות לזכות רפואה שלמה / הצלחה
         public static readonly IReadOnlyList<string> RefuahNames = new List<string>
         {
-            "גאולה בת ...",
-            "ארז פאר בן ...",
+            "ארז בן פנחס",
+            "גאולה גילה בת שושנה מזל",
         };
 
-        // שמות לעילוי נשמה — ערוך בחופשיות
+        // שמות לעילוי נשמה
         public static readonly IReadOnlyList<string> NeshamaNames = new List<string>
         {
             "...",
@@ -63,6 +63,7 @@ namespace BeitKnessetDisplay
         private string _tehillim = "", _chumash = "";
         private string _dafYomi = "", _rambam = "", _tanya = "", _hayomYom = "";
         private string _moladText = "", _shabbatMevarchimText = "";
+        private string _geshemText = "", _talText = "";
         private bool _isShabbatMevarchim;
         private IReadOnlyList<ZmanItem> _zmanimList = Array.Empty<ZmanItem>();
 
@@ -72,6 +73,7 @@ namespace BeitKnessetDisplay
         private bool _isReminderVisible = false;
         private bool _isRefuahVisible = false;
         private bool _isNeshamaVisible = false;
+        private bool _isPrayerTimesVisible = false;
         private IReadOnlyList<string> _refuahList = Array.Empty<string>();
         private IReadOnlyList<string> _neshamaList = Array.Empty<string>();
 
@@ -89,6 +91,8 @@ namespace BeitKnessetDisplay
         public string HayomYom { get => _hayomYom; set => Set(ref _hayomYom, value); }
         public string MoladText { get => _moladText; set => Set(ref _moladText, value); }
         public string ShabbatMevarchimText { get => _shabbatMevarchimText; set => Set(ref _shabbatMevarchimText, value); }
+        public string GeshemText { get => _geshemText; set => Set(ref _geshemText, value); }
+        public string TalText { get => _talText; set => Set(ref _talText, value); }
         public bool IsShabbatMevarchim { get => _isShabbatMevarchim; set => Set(ref _isShabbatMevarchim, value); }
         public IReadOnlyList<ZmanItem> Zmanim { get => _zmanimList; set => Set(ref _zmanimList, value); }
 
@@ -98,24 +102,25 @@ namespace BeitKnessetDisplay
         public bool IsReminderVisible { get => _isReminderVisible; set => Set(ref _isReminderVisible, value); }
         public bool IsRefuahVisible { get => _isRefuahVisible; set => Set(ref _isRefuahVisible, value); }
         public bool IsNeshamaVisible { get => _isNeshamaVisible; set => Set(ref _isNeshamaVisible, value); }
+        public bool IsPrayerTimesVisible { get => _isPrayerTimesVisible; set => Set(ref _isPrayerTimesVisible, value); }
         public IReadOnlyList<string> RefuahList { get => _refuahList; set => Set(ref _refuahList, value); }
         public IReadOnlyList<string> NeshamaList { get => _neshamaList; set => Set(ref _neshamaList, value); }
 
         public void RefreshClock() => Clock = DateTime.Now.ToString("HH:mm:ss");
 
         /// <summary>
-        /// מחזוריות: דשבורד → תזכורות → לזכות (רפואה/הצלחה) → לעילוי נשמה → חוזר.
+        /// מחזוריות: דשבורד → תזכורות → זמני תפילות → לזכות → לעילוי נשמה → חוזר.
         /// </summary>
         public void AdvancePage()
         {
-            // סך עמודים: 1 דשבורד + N תזכורות + 1 רפואה + 1 נשמות
-            int total = 1 + Reminders.Count + 1 + 1;
+            int total = 1 + Reminders.Count + 1 + 1 + 1;
             _pageIndex = (_pageIndex + 1) % total;
 
             IsDashboardVisible = false;
             IsReminderVisible = false;
             IsRefuahVisible = false;
             IsNeshamaVisible = false;
+            IsPrayerTimesVisible = false;
 
             if (_pageIndex == 0)
             {
@@ -129,6 +134,10 @@ namespace BeitKnessetDisplay
                 IsReminderVisible = true;
             }
             else if (_pageIndex == Reminders.Count + 1)
+            {
+                IsPrayerTimesVisible = true;
+            }
+            else if (_pageIndex == Reminders.Count + 2)
             {
                 RefuahList = RefuahNames;
                 IsRefuahVisible = true;
@@ -144,20 +153,23 @@ namespace BeitKnessetDisplay
         {
             var hc = new HebrewCalendar();
             var now = DateTime.Now;
-            bool leap = hc.IsLeapYear(hc.GetYear(now));
+            int hYear = hc.GetYear(now);
+            int hMonth = hc.GetMonth(now);
+            int hDay = hc.GetDayOfMonth(now);
+            bool leap = hc.IsLeapYear(hYear);
 
             RefreshClock();
 
-            HebrewDate = $"{HebrewDateFormatter.Day(hc.GetDayOfMonth(now))} " +
-                         $"{HebrewDateFormatter.Month(hc.GetMonth(now), leap)} " +
-                         $"{HebrewDateFormatter.Year(hc.GetYear(now))}";
+            HebrewDate = $"{HebrewDateFormatter.Day(hDay)} " +
+                         $"{HebrewDateFormatter.Month(hMonth, leap)} " +
+                         $"{HebrewDateFormatter.Year(hYear)}";
             GregorianDate = now.ToString("dddd, d MMMM yyyy", new CultureInfo("he-IL"));
 
             Parasha = _parashaService.GetWeeklyParasha(now);
             Haftarah = _jewish.GetHaftarah(Parasha);
             Prayers = _prayerService.GetFormatted();
 
-            var t = _learning.GetTehillim(hc.GetDayOfMonth(now));
+            var t = _learning.GetTehillim(hDay);
             Tehillim = $"פרקים {HebrewNumber.Range(t.from, t.to)}";
 
             Chumash = _learning.GetChumashAliya(now);
@@ -179,6 +191,24 @@ namespace BeitKnessetDisplay
                 ShabbatMevarchimText = "";
                 MoladText = "";
             }
+
+            // משיב הרוח / מוריד הטל + ותן טל ומטר / ברכנו
+            int nisanMonth = leap ? 8 : 7;
+            bool isGeshem =
+                (hMonth == 1 && hDay >= 22) ||
+                (hMonth > 1 && hMonth < nisanMonth) ||
+                (hMonth == nisanMonth && hDay <= 15);
+            bool isTalUmatar =
+                (hMonth == 2 && hDay >= 7) ||
+                (hMonth > 2 && hMonth < nisanMonth) ||
+                (hMonth == nisanMonth && hDay <= 15);
+
+            GeshemText = isGeshem
+                ? "אומרים: משיב הרוח ומוריד הגשם"
+                : "אומרים: מוריד הטל";
+            TalText = isTalUmatar
+                ? "אומרים: ותן טל ומטר לברכה"
+                : "אומרים: ברכנו / ותן ברכה";
 
             Zmanim = _zmanim.GetTodayZmanim();
         }
