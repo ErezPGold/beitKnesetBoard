@@ -44,7 +44,7 @@ namespace BeitKnessetDisplay
         // שמות לעילוי נשמה
         public static readonly IReadOnlyList<string> NeshamaNames = new List<string>
         {
-            "...",
+            "יעקב בן שלמה","לאה בת אסתר","סבא רחמים","סבתא סוליקה",
         };
 
         // משך הצגה של כל עמוד (שניות)
