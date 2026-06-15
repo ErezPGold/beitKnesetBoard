@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
 using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 
 namespace BeitKnessetDisplay
 {
@@ -114,6 +115,8 @@ namespace BeitKnessetDisplay
 
         public void RefreshClock() => Clock = DateTime.Now.ToString("HH:mm:ss");
 
+
+
         /// <summary>
         /// מחזוריות: דשבורד → תזכורות → זמני תפילות → לזכות → לעילוי נשמה → חוזר.
         /// </summary>
@@ -155,6 +158,55 @@ namespace BeitKnessetDisplay
             }
         }
 
+        // 2. השדות הפרטיים של מזג האוויר
+        private readonly WeatherService _weatherService = new WeatherService();
+        private string _currentTemperature = "--°C";
+        private string _weatherCondition = "טוען...";
+
+        // 3. המאפיינים הציבוריים (Properties) עם מנגנון העדכון של WPF
+        public string CurrentTemperature
+        {
+            get => _currentTemperature;
+            set
+            {
+                if (_currentTemperature != value)
+                {
+                    _currentTemperature = value;
+                    OnPropertyChanged(); // קריאה לפונקציית העדכון (שם המשתנה נשלח אוטומטית)
+                }
+            }
+        }
+
+        public string WeatherCondition
+        {
+            get => _weatherCondition;
+            set
+            {
+                if (_weatherCondition != value)
+                {
+                    _weatherCondition = value;
+                    OnPropertyChanged(); // קריאה לפונקציית העדכון (שם המשתנה נשלח אוטומטית)
+                }
+            }
+        }
+        // 5. פונקציית העדכון שמביאה את הנתונים מהשירות
+        public async Task UpdateWeatherAsync()
+        {
+            var (temp, condition) = await _weatherService.GetCurrentWeatherAsync();
+            CurrentTemperature = $"{Math.Round(temp)}°C";
+            WeatherCondition = condition;
+        }
+
+        // 🔥 6. הפונקציה שהייתה חסרה לך! היא זו שמונעת את שגיאה CS0103
+        // המאפיין [CallerMemberName] דואג לשלוח אוטומטית את שם ה-Property ממנו קראו לה
+        protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        
+
+        
         public void RefreshAll()
         {
             var hc = new HebrewCalendar();
@@ -217,6 +269,17 @@ namespace BeitKnessetDisplay
                 : "אומרים: ברכנו / ותן ברכה";
 
             Zmanim = _zmanim.GetTodayZmanim();
+
+            // הפעלת עדכון מזג האוויר מיד בעליית המסך
+            // 1. הפעלת עדכון מזג האוויר מיד בעליית המסך
+            _ = UpdateWeatherAsync();
+
+            // 2. הגדרת טיימר של WPF לעדכון אוטומטי פעם בשעה
+            System.Windows.Threading.DispatcherTimer weatherTimer = new System.Windows.Threading.DispatcherTimer();
+            weatherTimer.Interval = TimeSpan.FromHours(1); // מגדיר הרצה פעם בשעה בדיוק
+            weatherTimer.Tick += async (s, e) => await UpdateWeatherAsync();
+            weatherTimer.Start();
+
         }
     }
 }
