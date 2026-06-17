@@ -14,8 +14,9 @@ public class WeatherService
     public async Task<(double Temperature, string Condition)> GetCurrentWeatherAsync()
     {
         try
-        {
-            string url = $"https://open-meteo.com{Latitude}&longitude={Longitude}&current_weather=true";
+        {            
+            string url = $"https://api.open-meteo.com/v1/forecast?latitude={Latitude}&longitude={Longitude}&current_weather=true&timezone=Asia/Jerusalem";
+
             string response = await client.GetStringAsync(url);
 
             using (JsonDocument doc = JsonDocument.Parse(response))

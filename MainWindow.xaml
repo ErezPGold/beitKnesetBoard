@@ -296,61 +296,124 @@
                         </Border>
                     </Grid>
 
-                    <!-- שיעורים יומיים -->
+                    <!-- שיעורים יומיים – 3 עמודים מתחלפים -->
                     <Grid Grid.Row="2" Margin="0,10,0,0">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="*"/>
-                        </Grid.ColumnDefinitions>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="*"/>
-                            <RowDefinition Height="*"/>
-                        </Grid.RowDefinitions>
 
-                        <Border Style="{StaticResource Card}" Grid.Row="0" Grid.Column="0">
-                            <StackPanel>
-                                <TextBlock Style="{StaticResource Label}" Text="תהילים יומי"/>
-                                <TextBlock Style="{StaticResource Value}" Text="{Binding Tehillim}"/>
-                            </StackPanel>
-                        </Border>
-                        <Border Style="{StaticResource Card}" Grid.Row="0" Grid.Column="1">
-                            <StackPanel>
-                                <TextBlock Style="{StaticResource Label}" Text="חומש יומי"/>
-                                <TextBlock Style="{StaticResource Value}" Text="{Binding Chumash}"/>
-                            </StackPanel>
-                        </Border>
-                        <Border Style="{StaticResource Card}" Grid.Row="0" Grid.Column="2">
-                            <StackPanel>
-                                <TextBlock Style="{StaticResource Label}" Text="דף יומי"/>
-                                <Viewbox Stretch="Uniform" StretchDirection="DownOnly" MaxHeight="80">
-                                    <TextBlock Style="{StaticResource Value}"
-                                               Text="{Binding DafYomi}"
-                                               TextWrapping="Wrap"
-                                               TextAlignment="Center"/>
-                                </Viewbox>
-                            </StackPanel>
-                        </Border>
+                        <!-- ===== עמוד 1 ===== -->
+                        <UniformGrid Columns="3" Rows="2"
+                                    Visibility="{Binding IsLearningPage1, Converter={StaticResource BoolToVis}}">
+                            <Border Style="{StaticResource Card}">
+                                <StackPanel>
+                                    <TextBlock Style="{StaticResource Label}" Text="תהילים יומי"/>
+                                    <TextBlock Style="{StaticResource Value}" Text="{Binding Tehillim}"/>
+                                </StackPanel>
+                            </Border>
+                            <Border Style="{StaticResource Card}">
+                                <StackPanel>
+                                    <TextBlock Style="{StaticResource Label}" Text="חומש יומי"/>
+                                    <TextBlock Style="{StaticResource Value}" Text="{Binding Chumash}"/>
+                                </StackPanel>
+                            </Border>
+                            <Border Style="{StaticResource Card}">
+                                <StackPanel>
+                                    <TextBlock Style="{StaticResource Label}" Text="דף יומי"/>
+                                    <Viewbox Stretch="Uniform" StretchDirection="DownOnly" MaxHeight="80">
+                                        <TextBlock Style="{StaticResource Value}" Text="{Binding DafYomi}"
+                               TextWrapping="Wrap" TextAlignment="Center"/>
+                                    </Viewbox>
+                                </StackPanel>
+                            </Border>
+                            <Border Style="{StaticResource Card}">
+                                <StackPanel>
+                                    <TextBlock Style="{StaticResource Label}" Text="משנה יומית"/>
+                                    <TextBlock Style="{StaticResource Value}" Text="{Binding Mishna}"/>
+                                </StackPanel>
+                            </Border>
+                            <Border Style="{StaticResource Card}">
+                                <StackPanel>
+                                    <TextBlock Style="{StaticResource Label}" Text="רמב״ם (3 פרקים)"/>
+                                    <TextBlock Style="{StaticResource Value}" Text="{Binding Rambam}"/>
+                                </StackPanel>
+                            </Border>
+                            <Border Style="{StaticResource Card}">
+                                <StackPanel>
+                                    <TextBlock Style="{StaticResource Label}" Text="רמב״ם פרק 1"/>
+                                    <TextBlock Style="{StaticResource Value}" Text="{Binding Rambam1Perek}"/>
+                                </StackPanel>
+                            </Border>
+                        </UniformGrid>
 
-                        <Border Style="{StaticResource Card}" Grid.Row="1" Grid.Column="0">
-                            <StackPanel>
-                                <TextBlock Style="{StaticResource Label}" Text="רמב״ם (3 פרקים)"/>
-                                <TextBlock Style="{StaticResource Value}" Text="{Binding Rambam}"/>
-                            </StackPanel>
-                        </Border>
-                        <Border Style="{StaticResource Card}" Grid.Row="1" Grid.Column="1">
-                            <StackPanel>
-                                <TextBlock Style="{StaticResource Label}" Text="תניא"/>
-                                <TextBlock Style="{StaticResource Value}" Text="{Binding Tanya}"/>
-                            </StackPanel>
-                        </Border>
-                        <Border Style="{StaticResource Card}" Grid.Row="1" Grid.Column="2">
-                            <StackPanel>
-                                <TextBlock Style="{StaticResource Label}" Text="היום יום"/>
-                                <TextBlock Style="{StaticResource Value}" Text="{Binding HayomYom}"/>
-                            </StackPanel>
-                        </Border>
+                        <!-- ===== עמוד 2 ===== -->
+                        <UniformGrid Columns="3" Rows="2"
+                                     Visibility="{Binding IsLearningPage2, Converter={StaticResource BoolToVis}}">
+                            <Border Style="{StaticResource Card}">
+                                <StackPanel>
+                                    <TextBlock Style="{StaticResource Label}" Text="תניא"/>
+                                    <TextBlock Style="{StaticResource Value}" Text="{Binding Tanya}"/>
+                                </StackPanel>
+                            </Border>
+                            <Border Style="{StaticResource Card}">
+                                <StackPanel>
+                                    <TextBlock Style="{StaticResource Label}" Text="היום יום"/>
+                                    <TextBlock Style="{StaticResource Value}" Text="{Binding HayomYom}"/>
+                                </StackPanel>
+                            </Border>
+                            <Border Style="{StaticResource Card}">
+                                <StackPanel>
+                                    <TextBlock Style="{StaticResource Label}" Text="ירושלמי יומי"/>
+                                    <TextBlock Style="{StaticResource Value}" Text="{Binding Yerushalmi}"/>
+                                </StackPanel>
+                            </Border>
+                            <Border Style="{StaticResource Card}">
+                                <StackPanel>
+                                    <TextBlock Style="{StaticResource Label}" Text="הלכה יומית"/>
+                                    <TextBlock Style="{StaticResource Value}" Text="{Binding Halakha}"/>
+                                </StackPanel>
+                            </Border>
+                            <Border Style="{StaticResource Card}">
+                                <StackPanel>
+                                    <TextBlock Style="{StaticResource Label}" Text="תנ״ך יומי"/>
+                                    <TextBlock Style="{StaticResource Value}" Text="{Binding TanakhYomi}"/>
+                                </StackPanel>
+                            </Border>
+                            <Border Style="{StaticResource Card}">
+                                <StackPanel>
+                                    <TextBlock Style="{StaticResource Label}" Text="929"/>
+                                    <TextBlock Style="{StaticResource Value}" Text="{Binding Yom929}"/>
+                                </StackPanel>
+                            </Border>
+                        </UniformGrid>
+
+                        <!-- ===== עמוד 3 ===== -->
+                        <UniformGrid Columns="2" Rows="1"
+                                     Visibility="{Binding IsLearningPage3, Converter={StaticResource BoolToVis}}">
+                            <Border Style="{StaticResource Card}">
+                                <StackPanel>
+                                    <TextBlock Style="{StaticResource Label}" Text="חוק לישראל"/>
+                                    <TextBlock Style="{StaticResource Value}" Text="{Binding ChokLeYisrael}"/>
+                                </StackPanel>
+                            </Border>
+                            <Border Style="{StaticResource Card}">
+                                <StackPanel>
+                                    <TextBlock Style="{StaticResource Label}" Text="ערוך השולחן"/>
+                                    <TextBlock Style="{StaticResource Value}" Text="{Binding ArukhHaShulchan}"/>
+                                </StackPanel>
+                            </Border>
+                        </UniformGrid>
+
+                        <!-- אינדיקציה קטנה למעבר עמוד -->
+                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Bottom"
+                            Margin="0,0,0,4">
+                                        <Ellipse Width="10" Height="10" Margin="4,0" Fill="{StaticResource GoldBrush}"
+                             Opacity="{Binding IsLearningPage1, Converter={StaticResource BoolToVis}, FallbackValue=0.3}"/>
+                                        <Ellipse Width="10" Height="10" Margin="4,0" Fill="{StaticResource GoldBrush}"
+                             Opacity="{Binding IsLearningPage2, Converter={StaticResource BoolToVis}, FallbackValue=0.3}"/>
+                                        <Ellipse Width="10" Height="10" Margin="4,0" Fill="{StaticResource GoldBrush}"
+                             Opacity="{Binding IsLearningPage3, Converter={StaticResource BoolToVis}, FallbackValue=0.3}"/>
+                        </StackPanel>
                     </Grid>
+
+
 
                     <!-- זמני היום -->
                     <Border Grid.Row="3" Style="{StaticResource Card}" Margin="12,20,12,0">
