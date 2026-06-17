@@ -17,6 +17,7 @@ namespace BeitKnessetDisplay
         private readonly DailyLearningService _learning = new();
         private readonly JewishService _jewish = new();
         private readonly ZmanimService _zmanim = new(lat: 32.08, lng: 34.78, elevation: 0);
+        private readonly SefariaService _sefaria = new SefariaService();
 
         // ===== עמודים מתחלפים =====
         // עמוד 0 = דשבורד. אח"כ: תזכורות, זמני תפילות, לזכות, לעילוי נשמה.
@@ -73,6 +74,8 @@ namespace BeitKnessetDisplay
         private string _geshemText = "", _talText = "";
         private bool _isShabbatMevarchim;
         private IReadOnlyList<ZmanItem> _zmanimList = Array.Empty<ZmanItem>();
+        private string _rambam1Perek = "", _mishna = "", _yerushalmi = "", _halakha = "";
+        private string _tanakhYomi = "", _yom929 = "", _chokLeYisrael = "", _arukhHaShulchan = "";
 
         private int _pageIndex = 0;
         private string _reminderTitle = "", _reminderBody = "";
@@ -114,8 +117,17 @@ namespace BeitKnessetDisplay
         public IReadOnlyList<string> NeshamaList { get => _neshamaList; set => Set(ref _neshamaList, value); }
 
         public void RefreshClock() => Clock = DateTime.Now.ToString("HH:mm:ss");
+        
+        public string Mishna { get => _mishna; set => Set(ref _mishna, value); }
+        public string Yerushalmi { get => _yerushalmi; set => Set(ref _yerushalmi, value); }
+        public string Halakha { get => _halakha; set => Set(ref _halakha, value); }
+        public string TanakhYomi { get => _tanakhYomi; set => Set(ref _tanakhYomi, value); }
+        public string Yom929 { get => _yom929; set => Set(ref _yom929, value); }
+        public string ChokLeYisrael { get => _chokLeYisrael; set => Set(ref _chokLeYisrael, value); }
+        public string Rambam1Perek { get => _rambam1Perek; set => Set(ref _rambam1Perek, value); }
+        public string ArukhHaShulchan { get => _arukhHaShulchan; set => Set(ref _arukhHaShulchan, value); }
 
-
+        
 
         /// <summary>
         /// מחזוריות: דשבורד → תזכורות → זמני תפילות → לזכות → לעילוי נשמה → חוזר.
@@ -204,11 +216,11 @@ namespace BeitKnessetDisplay
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        
-
-        
-        public void RefreshAll()
+        public async Task RefreshAll()
         {
+            // טעינת לוח הלימודים מ-Sefaria (cache יומי)
+            await _sefaria.LoadAsync();
+
             var hc = new HebrewCalendar();
             var now = DateTime.Now;
             int hYear = hc.GetYear(now);
@@ -223,19 +235,30 @@ namespace BeitKnessetDisplay
                          $"{HebrewDateFormatter.Year(hYear)}";
             GregorianDate = now.ToString("dddd, d MMMM yyyy", new CultureInfo("he-IL"));
 
-            Parasha = _parashaService.GetWeeklyParasha(now);
-            Haftarah = _jewish.GetHaftarah(Parasha);
+            
+            Parasha = _sefaria.Get("Parashat Hashavua", _parashaService.GetWeeklyParasha(now));
+            Haftarah = _sefaria.Get("Haftarah", _jewish.GetHaftarah(Parasha));
             Prayers = _prayerService.GetFormatted();
 
             var t = _learning.GetTehillim(hDay);
             Tehillim = $"פרקים {HebrewNumber.Range(t.from, t.to)}";
-
             Chumash = _learning.GetChumashAliya(now);
-            DafYomi = _learning.GetDafYomi(now);
-            Rambam = _jewish.GetRambam3(now);
-            Tanya = _learning.GetTanya(now);
-            HayomYom = _learning.GetHayomYom(now);
 
+            // 🆕 כל הלימודים מ-Sefaria
+            DafYomi = _sefaria.Get("Daf Yomi", _learning.GetDafYomi(now));
+            Rambam = _sefaria.Get("Daily Rambam (3 Chapters)", _jewish.GetRambam3(now));
+            Rambam1Perek = _sefaria.Get("Daily Rambam", "");
+            Tanya = _sefaria.Get("Tanya Yomi", _learning.GetTanya(now));
+            Mishna = _sefaria.Get("Daily Mishnah", "");
+            Yerushalmi = _sefaria.Get("Yerushalmi Yomi", "");
+            Halakha = _sefaria.Get("Halakhah Yomit", "");
+            TanakhYomi = _sefaria.Get("Tanakh Yomi", "");
+            Yom929 = _sefaria.Get("929", "");
+            ChokLeYisrael = _sefaria.Get("Chok LeYisrael", "");
+            ArukhHaShulchan = _sefaria.Get("Arukh HaShulchan Yomi", "");
+
+
+            HayomYom = _learning.GetHayomYom(now);
             if (_jewish.IsShabbatMevarchim(now, out _, out var monthName))
             {
                 IsShabbatMevarchim = true;
@@ -278,7 +301,7 @@ namespace BeitKnessetDisplay
             System.Windows.Threading.DispatcherTimer weatherTimer = new System.Windows.Threading.DispatcherTimer();
             weatherTimer.Interval = TimeSpan.FromHours(1); // מגדיר הרצה פעם בשעה בדיוק
             weatherTimer.Tick += async (s, e) => await UpdateWeatherAsync();
-            weatherTimer.Start();
+            weatherTimer.Start();   
 
         }
     }

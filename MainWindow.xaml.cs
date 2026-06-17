@@ -16,11 +16,13 @@ namespace BeitKnessetDisplay
             InitializeComponent();
             DataContext = _vm;
 
-            _vm.RefreshAll();
+            _ = _vm.RefreshAll();
+            
+
 
             // שעון — מתעדכן כל שנייה
             _clockTimer.Interval = TimeSpan.FromSeconds(1);
-            _clockTimer.Tick += (_, _) => _vm.RefreshClock();
+            _refreshTimer.Tick += async (_, _) => await _vm.RefreshAll();
             _clockTimer.Start();
 
             // רענון תוכן יומי כל דקה (תאריך/זמנים מתעדכן בחצות)
