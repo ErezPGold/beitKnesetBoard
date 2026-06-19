@@ -1,0 +1,52 @@
+﻿<UserControl x:Class="BeitKnesetBoard.Views.YahrzeitPage"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             FlowDirection="RightToLeft"
+             Background="#0E1428">
+    <Grid Margin="40">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock Grid.Row="0"
+                   Text="{Binding YahrzeitHeader}"
+                   FontSize="48" FontWeight="Bold"
+                   Foreground="#F5C45E"
+                   HorizontalAlignment="Center"
+                   Margin="0,0,0,30"/>
+
+        <ItemsControl Grid.Row="1" ItemsSource="{Binding Yahrzeits}">
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <UniformGrid Columns="2" Rows="2"/>
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <Border Margin="12" Padding="20"
+                            Background="#1A2342"
+                            BorderBrush="#F5C45E" BorderThickness="2"
+                            CornerRadius="12">
+                        <StackPanel>
+                            <TextBlock Text="🕯" FontSize="28" HorizontalAlignment="Center"/>
+                            <TextBlock Text="{Binding Name}"
+                                       FontSize="28" FontWeight="Bold"
+                                       Foreground="White"
+                                       HorizontalAlignment="Center"
+                                       TextWrapping="Wrap"/>
+                            <TextBlock Text="{Binding Years}"
+                                       FontSize="16" Foreground="#9BA3B7"
+                                       HorizontalAlignment="Center"
+                                       Margin="0,4,0,12"/>
+                            <TextBlock Text="{Binding Bio}"
+                                       FontSize="18" Foreground="#E5E7EB"
+                                       TextWrapping="Wrap"
+                                       TextAlignment="Center"/>
+                        </StackPanel>
+                    </Border>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+    </Grid>
+</UserControl>

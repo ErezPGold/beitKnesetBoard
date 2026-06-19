@@ -1,3 +1,4 @@
+using BeitKnesetBoard.Services;
 using System;
 using System.Windows;
 using System.Windows.Threading;
@@ -10,6 +11,15 @@ namespace BeitKnessetDisplay
         private readonly DispatcherTimer _clockTimer = new();
         private readonly DispatcherTimer _refreshTimer = new();
         private readonly DispatcherTimer _pageTimer = new();
+        private async Task LoadYahrzeitAsync()
+        {
+            try
+            {
+                var day = await YahrzeitService.GetTodayAsync();
+                Dispatcher.Invoke(() => _vm.SetYahrzeit(day));
+            }
+            catch { /* fallback to empty */ }
+        }
 
         public MainWindow()
         {
@@ -30,13 +40,17 @@ namespace BeitKnessetDisplay
 
             // החלפת עמודים בלולאה
             // החלפת עמודים בלולאה - משך משתנה לפי סוג הדף
-            _pageTimer.Interval = TimeSpan.FromSeconds(DisplayViewModel.DashboardDurationSeconds);
+            _pageTimer.Interval = TimeSpan.FromSeconds(_vm.CurrentPageDurationSeconds);
             _pageTimer.Tick += (_, _) =>
             {
                 _vm.AdvancePage();
                 _pageTimer.Interval = TimeSpan.FromSeconds(_vm.CurrentPageDurationSeconds);
             };
             _pageTimer.Start();
+
+            // טעינת ימי הזיכרון פעם ביום
+            _ = LoadYahrzeitAsync();
+
 
         }
     }

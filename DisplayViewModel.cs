@@ -1,6 +1,8 @@
+using BeitKnesetBoard.Models;
 using BeitKnesset.Services;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Globalization;
 using System.Runtime.CompilerServices;
@@ -72,11 +74,24 @@ namespace BeitKnessetDisplay
         };
 
         // משך הצגה של כל עמוד (שניות)
-        public const int DashboardDurationSeconds = 24;   // דף הלימוד - ארוך
-        public const int OtherPageDurationSeconds = 7;    // שאר הדפים - קצר
+        public const int DashboardDurationSeconds = 24;
+        public const int OtherPageDurationSeconds = 10;
+
+        public ObservableCollection<Tzaddik> Yahrzeits { get; } = new();
+        public string YahrzeitHeader { get; set; } = "🕯 יום הילולא";
+
+        public bool IsYahrzeitVisible => _pageIndex == 6; // קבע לפי המיקום בסבב
+
         public int CurrentPageDurationSeconds =>
             IsDashboardVisible ? DashboardDurationSeconds : OtherPageDurationSeconds;
 
+        public void SetYahrzeit(YahrzeitDay day)
+        {
+            Yahrzeits.Clear();
+            foreach (var t in day.Tzaddikim) Yahrzeits.Add(t);
+            YahrzeitHeader = $"🕯 יום הילולא — {day.HebDate}";
+            OnPropertyChanged(nameof(YahrzeitHeader));
+        }
 
         public event PropertyChangedEventHandler? PropertyChanged;
         private void Set<T>(ref T field, T value, [CallerMemberName] string? name = null)
@@ -154,7 +169,7 @@ namespace BeitKnessetDisplay
         /// </summary>
         public void AdvancePage()
         {            
-            int total = 1 + Reminders.Count + 1 + 1 + 1;
+            int total = 1 + Reminders.Count + 1 + 1 + 1 +1;
             _pageIndex = (_pageIndex + 1) % total;
 
             IsDashboardVisible = false;

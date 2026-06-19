@@ -24,3 +24,7 @@ D:\visualStudioPrjs\BeitKnessetDisplay\BeitKnessetDisplay\obj\Debug\net10.0-wind
 D:\visualStudioPrjs\BeitKnessetDisplay\BeitKnessetDisplay\bin\Debug\net10.0-windows\prayers.json
 D:\visualStudioPrjs\BeitKnessetDisplay\BeitKnessetDisplay\bin\Debug\net10.0-windows\parshiot.json
 D:\visualStudioPrjs\BeitKnessetDisplay\BeitKnessetDisplay\obj\Debug\net10.0-windows\BeitKnessetDisplay.sourcelink.json
+D:\visualStudioPrjs\BeitKnessetDisplay\BeitKnessetDisplay\obj\Debug\net10.0-windows\Views\YahrzeitPage.baml
+D:\visualStudioPrjs\BeitKnessetDisplay\BeitKnessetDisplay\obj\Debug\net10.0-windows\Views\YahrzeitPage.g.cs
+D:\visualStudioPrjs\BeitKnessetDisplay\BeitKnessetDisplay\obj\Debug\net10.0-windows\GeneratedInternalTypeHelper.g.cs
+D:\visualStudioPrjs\BeitKnessetDisplay\BeitKnessetDisplay\obj\Debug\net10.0-windows\BeitKnessetDisplay_MarkupCompile.lref
