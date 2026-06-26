@@ -1,4 +1,6 @@
 using BeitKnesetBoard.Models;
+using BeitKnesetBoard.Services;
+using BeitKnesetDisplay.Models;
 using BeitKnesset.Services;
 using BeitKnessetDisplay.Services;
 using System;
@@ -8,7 +10,6 @@ using System.ComponentModel;
 using System.Globalization;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
-using BeitKnesetDisplay.Models;
 
 
 namespace BeitKnessetDisplay
@@ -17,6 +18,47 @@ namespace BeitKnessetDisplay
 
     public class DisplayViewModel : INotifyPropertyChanged
     {
+        public DisplayViewModel()
+        {
+            // ברירת מחדל לרפואה ולנשמות (ערוך לפי הצורך)
+            RefuahNames = new List<string>
+            {
+                "ארז בן פנחס",
+                "גאולה גילה בת שושנה מזל",
+                "אליהו אברהם בן רבי יעקב",
+                "ליאור בן רחל",
+            };
+
+                    NeshamaNames = new List<string>
+            {
+                "יעקב בן שלמה ז״ל",
+                "לאה בת אסתר ע״ה",
+                "סבא רחמים ז״ל",
+                "סבתא סוליקה ע״ה",
+                "דוד פיניאן ז״ל",
+            };
+
+            // Fallback לימי הילולא אם אין מפתח OpenAI / אין רשת
+            Yahrzeits.Add(new Tzaddik
+            {
+                Name = "האר״י הקדוש",
+                Years = "ה׳ש״ד – ה׳של״ב",
+                Description = "רבי יצחק לוריא אשכנזי, אבי הקבלה החדשה בצפת. תורתו עומדת ביסוד תורת החסידות."
+            });
+            Yahrzeits.Add(new Tzaddik
+            {
+                Name = "הבעל שם טוב",
+                Years = "ה׳תנ״ח – ה׳תק״כ",
+                Description = "רבי ישראל בן אליעזר, מייסד תנועת החסידות. לימד אהבת ישראל, שמחה ודבקות בה׳."
+            });
+            Yahrzeits.Add(new Tzaddik
+            {
+                Name = "הרמב״ם",
+                Years = "ד׳תתצ״ח – ד׳תתקס״ה",
+                Description = "רבי משה בן מימון, מגדולי הפוסקים. חיבר את משנה תורה ומורה נבוכים."
+            });
+        }
+
         private readonly PrayerService _prayerService = new();
         private readonly ParashaService _parashaService = new();
         private readonly DailyLearningService _learning = new();
@@ -49,20 +91,20 @@ namespace BeitKnessetDisplay
         {
             new("הכבוד לבית הכנסת",
                 "אסור לדבר בשעת התפילה וקריאת התורה"),
-            new("נטילת ידיים לסעודה",
-                "יש ליטול את הידיים שלוש פעמים לסירוגין על כל יד, ולברך 'על נטילת ידיים' לפני הניגוב"),
-            new("ברכת המזון",
-                "ברכת המזון בכוונה — סגולה לפרנסה ולשמירה. נכון לברך מתוך הסידור"),
-            new("שמירת הזמן",
-                "מנהג חב\"ד: לומר את כל התהילים לפני התפילה בשבת מברכים, ולא לאחר זמן התפילה"),
-            new("צדקה לפני התפילה",
-                "מנהג ישראל לתת צדקה לפני התפילה כמו שנאמר— \"ואני בצדק אחזה פניך\""),
-            new("קידוש שבת מברכים",
-                "אנו שמחים להודיע כי קידוש בכל שבת מברכים ייתרם על ידי משפחת אמיתי משה"),
-            new("שמירת הניקיון",
-                "בבקשה לשמור על הניקיון של בית הכנסת"),
-            new("מצוות ריצה לבית הכנסת",
-                "ישנו עניין הלכתי לרוץ או ללכת במהירות בדרך אל בית הכנסת, כדי להראות חביבות ורצון לקיים את המצווה. לעומת זאת, כאשר יוצאים מבית הכנסת, אסור לרוץ, מכיוון שריצה החוצה משדרת שממהרים לברוח מהמקום ושהשהות בו הייתה עול.")
+            //new("נטילת ידיים לסעודה",
+            //    "יש ליטול את הידיים שלוש פעמים לסירוגין על כל יד, ולברך 'על נטילת ידיים' לפני הניגוב"),
+            //new("ברכת המזון",
+            //    "ברכת המזון בכוונה — סגולה לפרנסה ולשמירה. נכון לברך מתוך הסידור"),
+            //new("שמירת הזמן",
+            //    "מנהג חב\"ד: לומר את כל התהילים לפני התפילה בשבת מברכים, ולא לאחר זמן התפילה"),
+            //new("צדקה לפני התפילה",
+            //    "מנהג ישראל לתת צדקה לפני התפילה כמו שנאמר— \"ואני בצדק אחזה פניך\""),
+            //new("קידוש שבת מברכים",
+            //    "אנו שמחים להודיע כי קידוש בכל שבת מברכים ייתרם על ידי משפחת אמיתי משה"),
+            //new("שמירת הניקיון",
+            //    "בבקשה לשמור על הניקיון של בית הכנסת"),
+            //new("מצוות ריצה לבית הכנסת",
+            //    "ישנו עניין הלכתי לרוץ או ללכת במהירות בדרך אל בית הכנסת, כדי להראות חביבות ורצון לקיים את המצווה. לעומת זאת, כאשר יוצאים מבית הכנסת, אסור לרוץ, מכיוון שריצה החוצה משדרת שממהרים לברוח מהמקום ושהשהות בו הייתה עול.")
         };
         // ===== הילולת צדיקים + רפואה + נשמה =====
         private string _hebrewDate = string.Empty;
@@ -120,36 +162,44 @@ namespace BeitKnessetDisplay
         /// </summary>
         public void AdvancePage()
         {
-            // דשבורד (1) + תזכורות (R) + רפואה+נשמות (1) + הילולא (1)
-            int total = 1 + Reminders.Count + 1 + 1;
+            // דשבורד (1) + תזכורות (R) + תפילות (1) + רפואה (1) + נשמה (1) + הילולא (1)
+            int total = 1 + Reminders.Count + 1 + 1 + 1 + 1;
             _pageIndex = (_pageIndex + 1) % total;
 
             IsDashboardVisible = false;
             IsReminderVisible = false;
+            IsPrayerTimesVisible = false;
             IsRefuahVisible = false;
             IsNeshamaVisible = false;
-            IsPrayerTimesVisible = false;
             IsYahrzeitVisible = false;
 
-            if (_pageIndex == 0)
+            int idx = _pageIndex;
+
+            if (idx == 0)
             {
                 IsDashboardVisible = true;
                 AdvanceLearningPage();
             }
-            else if (_pageIndex <= Reminders.Count)
+            else if (idx >= 1 && idx <= Reminders.Count)
             {
-                var r = Reminders[_pageIndex - 1];
+                var r = Reminders[idx - 1];
                 ReminderTitle = r.Title;
                 ReminderBody = r.Body;
                 IsReminderVisible = true;
-                IsPrayerTimesVisible = true;   // פאנל תפילות מוצג ליד התזכורת
             }
-            else if (_pageIndex == Reminders.Count + 1)
+            else if (idx == Reminders.Count + 1)
+            {
+                IsPrayerTimesVisible = true;
+            }
+            else if (idx == Reminders.Count + 2)
             {
                 RefuahList = RefuahNames;
-                NeshamaList = NeshamaNames;
                 IsRefuahVisible = true;
-                IsNeshamaVisible = true;       // פאנל נשמות מוצג ליד הרפואה
+            }
+            else if (idx == Reminders.Count + 3)
+            {
+                NeshamaList = NeshamaNames;
+                IsNeshamaVisible = true;
             }
             else
             {
@@ -158,6 +208,7 @@ namespace BeitKnessetDisplay
 
             OnPropertyChanged(nameof(CurrentPageDurationSeconds));
         }
+
 
         public int CurrentPageDurationSeconds =>
             IsDashboardVisible ? DashboardDurationSeconds : OtherPageDurationSeconds;
@@ -407,6 +458,9 @@ namespace BeitKnessetDisplay
                 ParshaRashi = rashi ?? "—";
             }
             catch { ParshaRashi = "—"; }
+
+            TzaddikimToday = (await _yahrzeitService.GetTodayAsync()).ToList();
+            OnPropertyChanged(nameof(TzaddikimToday));
 
         }
     }

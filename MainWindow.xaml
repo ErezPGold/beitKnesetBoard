@@ -11,21 +11,21 @@
     </Window.Background>
     <Window.Resources>
         <LinearGradientBrush x:Key="WoodBrush" StartPoint="0,0" EndPoint="1,1">
-            <GradientStop Color="#8B4513" Offset="0"/>
-            <GradientStop Color="#D4A574" Offset="0.5"/>
-            <GradientStop Color="#8B4513" Offset="1"/>
+            <GradientStop Color="#3E2A1A" Offset="0"/>
+            <GradientStop Color="#A87C4F" Offset="0.5"/>
+            <GradientStop Color="#3E2A1A" Offset="1"/>
         </LinearGradientBrush>
-        <SolidColorBrush x:Key="GoldTrim" Color="#FFD700"/>
+        <SolidColorBrush x:Key="GoldTrim" Color="#E8B86D"/>
         <LinearGradientBrush x:Key="CardBg" StartPoint="0,0" EndPoint="0,1">
-            <GradientStop Color="#E61a1a3e" Offset="0"/>
-            <GradientStop Color="#E62d1b4e" Offset="1"/>
+            <GradientStop Color="#E61E2F4D" Offset="0"/>
+            <GradientStop Color="#E62A3F6B" Offset="1"/>
         </LinearGradientBrush>
-        <SolidColorBrush x:Key="GlassBg" Color="#CC0a0a2e"/>
-        <SolidColorBrush x:Key="GoldText" Color="#FFD700"/>
-        <SolidColorBrush x:Key="LightText" Color="#FFF8E7"/>
-        <SolidColorBrush x:Key="WarmAccent" Color="#FF8C42"/>
-        <SolidColorBrush x:Key="Ivory" Color="#e8edf3"/>
-        <SolidColorBrush x:Key="Muted" Color="#9bb3cc"/>
+        <SolidColorBrush x:Key="GlassBg" Color="#CC1B2A4E"/>
+        <SolidColorBrush x:Key="GoldText" Color="#E8B86D"/>
+        <SolidColorBrush x:Key="LightText" Color="#F4E4BC"/>
+        <SolidColorBrush x:Key="WarmAccent" Color="#D4956A"/>
+        <SolidColorBrush x:Key="Ivory" Color="#F0F2F8"/>
+        <SolidColorBrush x:Key="Muted" Color="#A8B5CC"/>
 
         <Style x:Key="Card" TargetType="Border">
             <Setter Property="Background" Value="{StaticResource CardBg}"/>
@@ -385,7 +385,7 @@
                             </Grid>
 
 
-                            <!-- ===== רפואה + נשמה ===== -->
+                            <!-- ===== רפואה ===== -->
                             <Grid>
                                 <Grid.Style>
                                     <Style TargetType="Grid">
@@ -397,37 +397,48 @@
                                         </Style.Triggers>
                                     </Style>
                                 </Grid.Style>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="*"/>
-                                </Grid.ColumnDefinitions>
-                                <Border Grid.Column="0" Style="{StaticResource AnimatedCard}">
+                                <Border Style="{StaticResource AnimatedCard}">
                                     <StackPanel VerticalAlignment="Center">
                                         <TextBlock Text="💙" Style="{StaticResource PulseIcon}"/>
-                                        <TextBlock Text="להצלחה ולרפואה שלמה" Style="{StaticResource Label}" FontSize="46"/>
-                                        <ItemsControl ItemsSource="{Binding RefuahNamesText}" Margin="0,16,0,0">
+                                        <TextBlock Text="להצלחה ולרפואה שלמה" Style="{StaticResource Label}" FontSize="56"/>
+                                        <ItemsControl ItemsSource="{Binding RefuahNames}" Margin="0,20,0,0">
                                             <ItemsControl.ItemTemplate>
                                                 <DataTemplate>
-                                                    <TextBlock Text="{Binding}" Style="{StaticResource Value}" FontSize="30" Margin="0,6"/>
-                                                </DataTemplate>
-                                            </ItemsControl.ItemTemplate>
-                                        </ItemsControl>
-                                    </StackPanel>
-                                </Border>
-                                <Border Grid.Column="1" Style="{StaticResource AnimatedCard}">
-                                    <StackPanel VerticalAlignment="Center">
-                                        <TextBlock Text="🕯" Style="{StaticResource PulseIcon}"/>
-                                        <TextBlock Text="לעילוי נשמת" Style="{StaticResource Label}" FontSize="46"/>
-                                        <ItemsControl ItemsSource="{Binding NeshamaNamesText}" Margin="0,16,0,0">
-                                            <ItemsControl.ItemTemplate>
-                                                <DataTemplate>
-                                                    <TextBlock Text="{Binding}" Style="{StaticResource Value}" FontSize="30" Margin="0,6"/>
+                                                    <TextBlock Text="{Binding}" Style="{StaticResource Value}" FontSize="36" Margin="0,6" TextAlignment="Center"/>
                                                 </DataTemplate>
                                             </ItemsControl.ItemTemplate>
                                         </ItemsControl>
                                     </StackPanel>
                                 </Border>
                             </Grid>
+
+                            <!-- ===== נשמה ===== -->
+                            <Grid>
+                                <Grid.Style>
+                                    <Style TargetType="Grid">
+                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding IsNeshamaVisible}" Value="True">
+                                                <Setter Property="Visibility" Value="Visible"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Grid.Style>
+                                <Border Style="{StaticResource AnimatedCard}">
+                                    <StackPanel VerticalAlignment="Center">
+                                        <TextBlock Text="🕯" Style="{StaticResource PulseIcon}"/>
+                                        <TextBlock Text="לעילוי נשמת" Style="{StaticResource Label}" FontSize="56"/>
+                                        <ItemsControl ItemsSource="{Binding NeshamaNames}" Margin="0,20,0,0">
+                                            <ItemsControl.ItemTemplate>
+                                                <DataTemplate>
+                                                    <TextBlock Text="{Binding}" Style="{StaticResource Value}" FontSize="36" Margin="0,6" TextAlignment="Center"/>
+                                                </DataTemplate>
+                                            </ItemsControl.ItemTemplate>
+                                        </ItemsControl>
+                                    </StackPanel>
+                                </Border>
+                            </Grid>
+
 
                             <!-- ===== יום הילולא ===== -->
                             <Border>
