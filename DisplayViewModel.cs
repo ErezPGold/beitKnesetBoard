@@ -171,14 +171,19 @@ namespace BeitKnessetDisplay
         public string Rambam1Perek { get => _rambam1Perek; set => Set(ref _rambam1Perek, value); }
         public string ArukhHaShulchan { get => _arukhHaShulchan; set => Set(ref _arukhHaShulchan, value); }
 
-        
+        private string _parshaRashi = "טוען...";
+        public string ParshaRashi
+        {
+            get => _parshaRashi;
+            set { _parshaRashi = value; OnPropertyChanged(nameof(ParshaRashi)); }
+        }
 
         /// <summary>
         /// מחזוריות: דשבורד → תזכורות → זמני תפילות → לזכות → לעילוי נשמה → חוזר.
         /// </summary>
         public void AdvancePage()
-        {            
-            int total = 1 + Reminders.Count + 1 + 1 + 1 +1;
+        {
+            int total = 1 + Reminders.Count + 1 + 1;
             _pageIndex = (_pageIndex + 1) % total;
 
             IsDashboardVisible = false;
@@ -267,6 +272,10 @@ namespace BeitKnessetDisplay
             ParshaName = p.Name;
             ParshaSummary = p.Summary;
         }
+        private readonly TehillimService _tehillimSvc = new();
+        private string _tehillimText = "", _tehillimChapterTitle = "";
+        public string TehillimText { get => _tehillimText; set => Set(ref _tehillimText, value); }
+        public string TehillimChapterTitle { get => _tehillimChapterTitle; set => Set(ref _tehillimChapterTitle, value); }
 
 
         public async Task RefreshAll()
@@ -357,6 +366,18 @@ namespace BeitKnessetDisplay
             weatherTimer.Start();
 
             await LoadParshaAsync();
+
+            // בתוך RefreshAll(), אחרי קביעת Tehillim:
+            int chapterOfDay = ((DateTime.Now.DayOfYear - 1) % 150) + 1;
+            TehillimChapterTitle = $"פרק תהילים יומי — פרק {HebrewNumber.Range(chapterOfDay, chapterOfDay)}";
+            TehillimText = await _tehillimSvc.GetChapterTextAsync(chapterOfDay);
+
+            try
+            {
+                var rashi = await _sefaria.GetRashiOnParshaAsync();
+                ParshaRashi = rashi ?? "—";
+            }
+            catch { ParshaRashi = "—"; }
 
         }
     }

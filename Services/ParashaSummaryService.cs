@@ -53,5 +53,22 @@ namespace BeitKnesset.Services
             }
             return info;
         }
+        public async Task<(string verse, string rashi)> GetFirstVerseWithRashiAsync(string parashaEnglishRef)
+        {
+            // parashaEnglishRef = למשל "Genesis.1.1"
+            var http = new HttpClient();
+            var verseJson = await http.GetStringAsync($"https://www.sefaria.org/api/texts/{parashaEnglishRef}?lang=he");
+            var rashiJson = await http.GetStringAsync($"https://www.sefaria.org/api/texts/Rashi_on_{parashaEnglishRef}?lang=he");
+            using var v = JsonDocument.Parse(verseJson);
+            using var r = JsonDocument.Parse(rashiJson);
+            var verse = v.RootElement.GetProperty("he").GetString() ?? "";
+            var rashi = r.RootElement.GetProperty("he").ValueKind == JsonValueKind.Array
+                ? string.Join(" ", r.RootElement.GetProperty("he").EnumerateArray().Select(x => x.GetString()))
+                : r.RootElement.GetProperty("he").GetString() ?? "";
+            var clean = System.Text.RegularExpressions.Regex.Replace(rashi, "<.*?>", "");
+            return (verse, clean);
+        }
+
+
     }
 }

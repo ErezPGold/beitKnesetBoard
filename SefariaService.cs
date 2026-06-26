@@ -54,5 +54,21 @@ namespace BeitKnessetDisplay
             return _cache.TryGetValue(sefariaKey, out var v) && !string.IsNullOrWhiteSpace(v)
                 ? v : fallback;
         }
+        public async Task<string> GetRashiOnParshaAsync()
+        {
+            // מביא את פירוש רש"י על פסוק א' של הפרשה השבועית
+            var url = "https://www.sefaria.org/api/texts/Rashi_on_Genesis.1.1?context=0&commentary=0";
+            var json = await _http.GetStringAsync(url);
+            using var doc = System.Text.Json.JsonDocument.Parse(json);
+            if (doc.RootElement.TryGetProperty("he", out var he))
+            {
+                if (he.ValueKind == System.Text.Json.JsonValueKind.Array && he.GetArrayLength() > 0)
+                    return System.Text.RegularExpressions.Regex.Replace(he[0].GetString() ?? "", "<.*?>", "");
+                if (he.ValueKind == System.Text.Json.JsonValueKind.String)
+                    return System.Text.RegularExpressions.Regex.Replace(he.GetString() ?? "", "<.*?>", "");
+            }
+            return "—";
+        }
+
     }
 }
