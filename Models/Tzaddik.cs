@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace BeitKnesetBoard.Models;
-
-public class Tzaddik
+﻿namespace BeitKnesetDisplay.Models
 {
-    public string Name { get; set; } = "";
-    public string Years { get; set; } = "";
-    public string Bio { get; set; } = "";
+    public class Tzaddik
+    {
+        public string Name { get; set; } = string.Empty;
+        public string Years { get; set; } = string.Empty;
+        public string Description { get; set; } = string.Empty;
+        public string Saying { get; set; } = string.Empty;
+    }
 }
-

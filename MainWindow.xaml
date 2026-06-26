@@ -342,7 +342,7 @@
                                 </UniformGrid>
                             </Grid>
 
-                            <!-- ===== תזכורת + תפילות ===== -->
+                            <!-- ===== תזכורת ===== -->
                             <Grid>
                                 <Grid.Style>
                                     <Style TargetType="Grid">
@@ -354,25 +354,36 @@
                                         </Style.Triggers>
                                     </Style>
                                 </Grid.Style>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="*"/>
-                                </Grid.ColumnDefinitions>
-                                <Border Grid.Column="0" Style="{StaticResource AnimatedCard}">
+                                <Border Style="{StaticResource AnimatedCard}">
                                     <StackPanel VerticalAlignment="Center">
                                         <TextBlock Text="📣" Style="{StaticResource PulseIcon}"/>
-                                        <TextBlock Text="{Binding ReminderTitle}" Style="{StaticResource Label}" FontSize="50"/>
-                                        <TextBlock Text="{Binding ReminderBody}" Style="{StaticResource Value}" FontSize="34" Margin="20"/>
-                                    </StackPanel>
-                                </Border>
-                                <Border Grid.Column="1" Style="{StaticResource AnimatedCard}">
-                                    <StackPanel VerticalAlignment="Center">
-                                        <TextBlock Text="🕍" Style="{StaticResource PulseIcon}"/>
-                                        <TextBlock Text="זמני תפילות" Style="{StaticResource Label}" FontSize="50"/>
-                                        <TextBlock Text="{Binding Prayers}" Style="{StaticResource Value}" FontSize="32" Margin="20"/>
+                                        <TextBlock Text="{Binding ReminderTitle}" Style="{StaticResource Label}" FontSize="56"/>
+                                        <TextBlock Text="{Binding ReminderBody}" Style="{StaticResource Value}" FontSize="38" Margin="20" TextWrapping="Wrap"/>
                                     </StackPanel>
                                 </Border>
                             </Grid>
+
+                            <!-- ===== זמני תפילות ===== -->
+                            <Grid>
+                                <Grid.Style>
+                                    <Style TargetType="Grid">
+                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding IsPrayerTimesVisible}" Value="True">
+                                                <Setter Property="Visibility" Value="Visible"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Grid.Style>
+                                <Border Style="{StaticResource AnimatedCard}">
+                                    <StackPanel VerticalAlignment="Center">
+                                        <TextBlock Text="🕍" Style="{StaticResource PulseIcon}"/>
+                                        <TextBlock Text="זמני תפילות" Style="{StaticResource Label}" FontSize="56"/>
+                                        <TextBlock Text="{Binding Prayers}" Style="{StaticResource Value}" FontSize="36" Margin="20"/>
+                                    </StackPanel>
+                                </Border>
+                            </Grid>
+
 
                             <!-- ===== רפואה + נשמה ===== -->
                             <Grid>
@@ -394,7 +405,7 @@
                                     <StackPanel VerticalAlignment="Center">
                                         <TextBlock Text="💙" Style="{StaticResource PulseIcon}"/>
                                         <TextBlock Text="להצלחה ולרפואה שלמה" Style="{StaticResource Label}" FontSize="46"/>
-                                        <ItemsControl ItemsSource="{Binding RefuahList}" Margin="0,16,0,0">
+                                        <ItemsControl ItemsSource="{Binding RefuahNamesText}" Margin="0,16,0,0">
                                             <ItemsControl.ItemTemplate>
                                                 <DataTemplate>
                                                     <TextBlock Text="{Binding}" Style="{StaticResource Value}" FontSize="30" Margin="0,6"/>
@@ -407,7 +418,7 @@
                                     <StackPanel VerticalAlignment="Center">
                                         <TextBlock Text="🕯" Style="{StaticResource PulseIcon}"/>
                                         <TextBlock Text="לעילוי נשמת" Style="{StaticResource Label}" FontSize="46"/>
-                                        <ItemsControl ItemsSource="{Binding NeshamaList}" Margin="0,16,0,0">
+                                        <ItemsControl ItemsSource="{Binding NeshamaNamesText}" Margin="0,16,0,0">
                                             <ItemsControl.ItemTemplate>
                                                 <DataTemplate>
                                                     <TextBlock Text="{Binding}" Style="{StaticResource Value}" FontSize="30" Margin="0,6"/>

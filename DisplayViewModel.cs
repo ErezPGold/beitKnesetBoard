@@ -8,6 +8,7 @@ using System.ComponentModel;
 using System.Globalization;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
+using BeitKnesetDisplay.Models;
 
 
 namespace BeitKnessetDisplay
@@ -50,33 +51,59 @@ namespace BeitKnessetDisplay
                 "אסור לדבר בשעת התפילה וקריאת התורה"),
             new("נטילת ידיים לסעודה",
                 "יש ליטול את הידיים שלוש פעמים לסירוגין על כל יד, ולברך 'על נטילת ידיים' לפני הניגוב"),
-            //new("ברכת המזון",
-            //    "ברכת המזון בכוונה — סגולה לפרנסה ולשמירה. נכון לברך מתוך הסידור"),
-            //new("שמירת הזמן",
-            //    "מנהג חב\"ד: לומר את כל התהילים לפני התפילה בשבת מברכים, ולא לאחר זמן התפילה"),
-            //new("צדקה לפני התפילה",
-            //    "מנהג ישראל לתת צדקה לפני התפילה כמו שנאמר— \"ואני בצדק אחזה פניך\""),
-            //new("קידוש שבת מברכים",
-            //    "אנו שמחים להודיע כי קידוש בכל שבת מברכים ייתרם על ידי משפחת אמיתי משה"),
-            //new("שמירת הניקיון",
-            //    "בבקשה לשמור על הניקיון של בית הכנסת"),
-            //new("מצוות ריצה לבית הכנסת",
-            //    "ישנו עניין הלכתי לרוץ או ללכת במהירות בדרך אל בית הכנסת, כדי להראות חביבות ורצון לקיים את המצווה. לעומת זאת, כאשר יוצאים מבית הכנסת, אסור לרוץ, מכיוון שריצה החוצה משדרת שממהרים לברוח מהמקום ושהשהות בו הייתה עול.")
+            new("ברכת המזון",
+                "ברכת המזון בכוונה — סגולה לפרנסה ולשמירה. נכון לברך מתוך הסידור"),
+            new("שמירת הזמן",
+                "מנהג חב\"ד: לומר את כל התהילים לפני התפילה בשבת מברכים, ולא לאחר זמן התפילה"),
+            new("צדקה לפני התפילה",
+                "מנהג ישראל לתת צדקה לפני התפילה כמו שנאמר— \"ואני בצדק אחזה פניך\""),
+            new("קידוש שבת מברכים",
+                "אנו שמחים להודיע כי קידוש בכל שבת מברכים ייתרם על ידי משפחת אמיתי משה"),
+            new("שמירת הניקיון",
+                "בבקשה לשמור על הניקיון של בית הכנסת"),
+            new("מצוות ריצה לבית הכנסת",
+                "ישנו עניין הלכתי לרוץ או ללכת במהירות בדרך אל בית הכנסת, כדי להראות חביבות ורצון לקיים את המצווה. לעומת זאת, כאשר יוצאים מבית הכנסת, אסור לרוץ, מכיוון שריצה החוצה משדרת שממהרים לברוח מהמקום ושהשהות בו הייתה עול.")
         };
-
-        // שמות לזכות רפואה שלמה / הצלחה
-        public static readonly IReadOnlyList<string> RefuahNames = new List<string>
+        // ===== הילולת צדיקים + רפואה + נשמה =====
+        private string _hebrewDate = string.Empty;
+        public string HebrewDate
         {
-            "ארז בן פנחס",
-            "גאולה גילה בת שושנה מזל",
-            "אליהו אברהם בן רבי יעקב",
-        };
+            get => _hebrewDate;
+            set { _hebrewDate = value; OnPropertyChanged(nameof(HebrewDate)); }
+        }
 
-        // שמות לעילוי נשמה
-        public static readonly IReadOnlyList<string> NeshamaNames = new List<string>
+        private IReadOnlyList<string> _refuahNames = new List<string>();
+        public IReadOnlyList<string> RefuahNames
         {
-            "יעקב בן שלמה","לאה בת אסתר","סבא רחמים","סבתא סוליקה","דוד פיניאן",
-        };
+            get => _refuahNames;
+            set { _refuahNames = value; OnPropertyChanged(nameof(RefuahNames)); OnPropertyChanged(nameof(RefuahNamesText)); }
+        }
+        public string RefuahNamesText => string.Join(" • ", RefuahNames ?? new List<string>());
+
+        private IReadOnlyList<string> _neshamaNames = new List<string>();
+        public IReadOnlyList<string> NeshamaNames
+        {
+            get => _neshamaNames;
+            set { _neshamaNames = value; OnPropertyChanged(nameof(NeshamaNames)); OnPropertyChanged(nameof(NeshamaNamesText)); }
+        }
+        public string NeshamaNamesText => string.Join(" • ", NeshamaNames ?? new List<string>());
+
+        public ObservableCollection<Tzaddik> TzaddikimToday { get; } = new();
+
+
+        //// שמות לזכות רפואה שלמה / הצלחה
+        //public static readonly IReadOnlyList<string> RefuahNames = new List<string>
+        //{
+        //    "ארז בן פנחס",
+        //    "גאולה גילה בת שושנה מזל",
+        //    "אליהו אברהם בן רבי יעקב",
+        //};
+
+        //// שמות לעילוי נשמה
+        //public static readonly IReadOnlyList<string> NeshamaNames = new List<string>
+        //{
+        //    "יעקב בן שלמה","לאה בת אסתר","סבא רחמים","סבתא סוליקה","דוד פיניאן",
+        //};
 
         // משך הצגה של כל עמוד (שניות)
         public const int DashboardDurationSeconds = 24;
@@ -85,7 +112,52 @@ namespace BeitKnessetDisplay
         public ObservableCollection<Tzaddik> Yahrzeits { get; } = new();
         public string YahrzeitHeader { get; set; } = "🕯 יום הילולא";
 
-        public bool IsYahrzeitVisible => _pageIndex == 6; // קבע לפי המיקום בסבב
+        // במקום השורה הקיימת public bool IsYahrzeitVisible => _pageIndex == 6;
+        private bool _isYahrzeitVisible = false;
+        public bool IsYahrzeitVisible { get => _isYahrzeitVisible; set => Set(ref _isYahrzeitVisible, value); }
+        /// <summary>
+        /// מחזוריות: דשבורד → תזכורות → זמני תפילות → לזכות → לעילוי נשמה → חוזר.
+        /// </summary>
+        public void AdvancePage()
+        {
+            // דשבורד (1) + תזכורות (R) + רפואה+נשמות (1) + הילולא (1)
+            int total = 1 + Reminders.Count + 1 + 1;
+            _pageIndex = (_pageIndex + 1) % total;
+
+            IsDashboardVisible = false;
+            IsReminderVisible = false;
+            IsRefuahVisible = false;
+            IsNeshamaVisible = false;
+            IsPrayerTimesVisible = false;
+            IsYahrzeitVisible = false;
+
+            if (_pageIndex == 0)
+            {
+                IsDashboardVisible = true;
+                AdvanceLearningPage();
+            }
+            else if (_pageIndex <= Reminders.Count)
+            {
+                var r = Reminders[_pageIndex - 1];
+                ReminderTitle = r.Title;
+                ReminderBody = r.Body;
+                IsReminderVisible = true;
+                IsPrayerTimesVisible = true;   // פאנל תפילות מוצג ליד התזכורת
+            }
+            else if (_pageIndex == Reminders.Count + 1)
+            {
+                RefuahList = RefuahNames;
+                NeshamaList = NeshamaNames;
+                IsRefuahVisible = true;
+                IsNeshamaVisible = true;       // פאנל נשמות מוצג ליד הרפואה
+            }
+            else
+            {
+                IsYahrzeitVisible = true;
+            }
+
+            OnPropertyChanged(nameof(CurrentPageDurationSeconds));
+        }
 
         public int CurrentPageDurationSeconds =>
             IsDashboardVisible ? DashboardDurationSeconds : OtherPageDurationSeconds;
@@ -106,7 +178,7 @@ namespace BeitKnessetDisplay
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
 
-        private string _clock = "", _hebrewDate = "", _gregorianDate = "";
+        private string _clock = "",  _gregorianDate = "";
         private string _parasha = "", _haftarah = "", _prayers = "";
         private string _tehillim = "", _chumash = "";
         private string _dafYomi = "", _rambam = "", _tanya = "", _hayomYom = "";
@@ -132,7 +204,6 @@ namespace BeitKnessetDisplay
         private IReadOnlyList<string> _neshamaList = Array.Empty<string>();
 
         public string Clock { get => _clock; set => Set(ref _clock, value); }
-        public string HebrewDate { get => _hebrewDate; set => Set(ref _hebrewDate, value); }
         public string GregorianDate { get => _gregorianDate; set => Set(ref _gregorianDate, value); }
         public string Parasha { get => _parasha; set => Set(ref _parasha, value); }
         public string Haftarah { get => _haftarah; set => Set(ref _haftarah, value); }
@@ -176,48 +247,6 @@ namespace BeitKnessetDisplay
         {
             get => _parshaRashi;
             set { _parshaRashi = value; OnPropertyChanged(nameof(ParshaRashi)); }
-        }
-
-        /// <summary>
-        /// מחזוריות: דשבורד → תזכורות → זמני תפילות → לזכות → לעילוי נשמה → חוזר.
-        /// </summary>
-        public void AdvancePage()
-        {
-            int total = 1 + Reminders.Count + 1 + 1;
-            _pageIndex = (_pageIndex + 1) % total;
-
-            IsDashboardVisible = false;
-            IsReminderVisible = false;
-            IsRefuahVisible = false;
-            IsNeshamaVisible = false;
-            IsPrayerTimesVisible = false;
-
-            if (_pageIndex == 0)
-            {
-                IsDashboardVisible = true;
-                AdvanceLearningPage();
-            }
-            else if (_pageIndex <= Reminders.Count)
-            {
-                var r = Reminders[_pageIndex - 1];
-                ReminderTitle = r.Title;
-                ReminderBody = r.Body;
-                IsReminderVisible = true;
-            }
-            else if (_pageIndex == Reminders.Count + 1)
-            {
-                IsPrayerTimesVisible = true;
-            }
-            else if (_pageIndex == Reminders.Count + 2)
-            {
-                RefuahList = RefuahNames;
-                IsRefuahVisible = true;
-            }
-            else
-            {
-                NeshamaList = NeshamaNames;
-                IsNeshamaVisible = true;
-            }
         }
 
         // 2. השדות הפרטיים של מזג האוויר
