@@ -47,8 +47,6 @@ namespace BeitKnessetDisplay
             InitializeComponent();
             DataContext = _vm;
 
-            _ = _vm.RefreshAll();
-
             // טעינה ראשונית
             _ = RefreshAllSafeAsync();
 

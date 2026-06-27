@@ -4,6 +4,8 @@ using System.Net;
 using System.Net.Http;
 using System.Text.Json;
 using System.Text.RegularExpressions;
+using System.Collections.Generic;
+using System.Globalization;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -56,8 +58,8 @@ namespace BeitKnessetDisplay.Services
                 if (_memoryDate == today && !string.IsNullOrWhiteSpace(_memoryQuote))
                     return _memoryQuote!;
 
-                // פנייה דרך r.jina.ai – מחזיר Markdown נקי של הדף בעברית
-                var url = "https://r.jina.ai/https://he.chabad.org/calendar/view/day_cdo/aid/2263399/jewish/Hayom-Yom.htm";
+                var tdate = DateTime.Now.ToString("M/d/yyyy", CultureInfo.InvariantCulture);
+                var url = $"https://r.jina.ai/https://he.chabad.org/dailystudy/hayomyom.asp?tdate={tdate}";
 
                 using var request = new HttpRequestMessage(HttpMethod.Get, url);
                 request.Headers.UserAgent.ParseAdd("Mozilla/5.0 BeitKnesetBoard/1.0");
@@ -108,42 +110,113 @@ namespace BeitKnessetDisplay.Services
 
         private static string ExtractQuote(string md)
         {
-            // r.jina.ai מחזיר Markdown. נחתוך החל מהכותרת "היום יום" ועד "שיעורים" / "לוח השיעורים"
-            var startIdx = md.IndexOf("היום יום", StringComparison.Ordinal);
-            if (startIdx < 0) startIdx = 0;
+            if (string.IsNullOrWhiteSpace(md))
+                return "";
 
-            var slice = md.Substring(startIdx);
+            var text = md.Replace("\r\n", "\n").Replace("\r", "\n");
 
-            var endMarkers = new[] { "שיעורים", "לוח השיעורים", "תגובות", "שתפו", "Hayom" };
-            int end = slice.Length;
-            foreach (var marker in endMarkers)
+            var marker = "**שיעורים:**";
+            var start = text.IndexOf(marker, StringComparison.Ordinal);
+
+            if (start < 0)
+                start = text.IndexOf("שיעורים:", StringComparison.Ordinal);
+
+            if (start < 0)
             {
-                var idx = slice.IndexOf(marker, 50, StringComparison.Ordinal);
-                if (idx > 0 && idx < end) end = idx;
+                System.Diagnostics.Debug.WriteLine("[HayomYom] שיעורים marker not found.");
+                return "";
             }
-            slice = slice.Substring(0, end);
 
-            // ניקוי שורות לא רלוונטיות
+            var slice = text.Substring(start + marker.Length);
             var lines = slice.Split('\n');
-            var sb = new System.Text.StringBuilder();
+
+            var quoteLines = new List<string>();
+            var startedQuote = false;
+
             foreach (var raw in lines)
             {
                 var line = CleanLine(raw);
-                if (string.IsNullOrWhiteSpace(line)) continue;
-                if (line.Length < 25) continue;                  // ניווט / כותרות
-                if (line.Contains("chabad.org", StringComparison.OrdinalIgnoreCase)) continue;
-                if (line.StartsWith("#")) continue;
-                if (line.StartsWith("===") || line.StartsWith("---")) continue;
-                if (Regex.IsMatch(line, @"^\d{1,2}\s")) continue; // תאריכים בתחילת שורה
 
-                sb.AppendLine(line);
-                if (sb.Length > 700) break;
+                if (string.IsNullOrWhiteSpace(line))
+                    continue;
+
+                if (!startedQuote)
+                {
+                    if (IsDailyStudyLine(line))
+                        continue;
+
+                    startedQuote = true;
+                }
+
+                if (IsEndOfHayomYom(line))
+                    break;
+
+                if (ShouldSkipHayomYomLine(line))
+                    continue;
+
+                quoteLines.Add(line);
+
+                if (string.Join(" ", quoteLines).Length > 1200)
+                    break;
             }
 
-            var result = sb.ToString().Trim();
-            if (result.Length > 900) result = result.Substring(0, 900) + "…";
+            var result = string.Join(Environment.NewLine + Environment.NewLine, quoteLines).Trim();
+
+            if (result.Length > 1300)
+                result = result.Substring(0, 1300) + "…";
+
             return result;
         }
+
+        private static bool IsDailyStudyLine(string line)
+        {
+            return line.StartsWith("שיעורים:", StringComparison.Ordinal)
+                || line.StartsWith("חומש:", StringComparison.Ordinal)
+                || line.StartsWith("תהילים:", StringComparison.Ordinal)
+                || line.StartsWith("תניא:", StringComparison.Ordinal)
+                || line.StartsWith("רמב", StringComparison.Ordinal);
+        }
+
+        private static bool IsEndOfHayomYom(string line)
+        {
+            if (line.StartsWith("אודות הספר", StringComparison.Ordinal))
+                return true;
+
+            if (line.StartsWith("שיעורי לימוד יומיים", StringComparison.Ordinal))
+                return true;
+
+            if (line.StartsWith("חומש עם רש", StringComparison.Ordinal))
+                return true;
+
+            // לדוגמה: שבת י״ב תמוז ה׳תשפ״ו / 27 יוני 2026
+            if (Regex.IsMatch(line, @"^(ראשון|שני|שלישי|רביעי|חמישי|שישי|שבת)\s") &&
+                line.Contains("/") &&
+                Regex.IsMatch(line, @"\d{4}"))
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        private static bool ShouldSkipHayomYomLine(string line)
+        {
+            if (line.Contains("chabad.org", StringComparison.OrdinalIgnoreCase))
+                return true;
+
+            if (line.StartsWith("#", StringComparison.Ordinal))
+                return true;
+
+            if (line.StartsWith("===", StringComparison.Ordinal) ||
+                line.StartsWith("---", StringComparison.Ordinal))
+                return true;
+
+            if (line == "היום")
+                return true;
+
+            return false;
+        }
+
 
         private static string CleanLine(string line)
         {
