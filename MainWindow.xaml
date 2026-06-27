@@ -262,16 +262,10 @@
                                     </Border>
                                     <Border Style="{StaticResource AnimatedCard}">
                                         <DockPanel>
-                                            <TextBlock DockPanel.Dock="Top" Text="✡ היום יום" Style="{StaticResource LearnLabel}"/>
+                                            <TextBlock DockPanel.Dock="Top" Text="📚 רמב״ם (פרק אחד)" Style="{StaticResource LearnLabel}"/>
                                             <Viewbox Stretch="Uniform" StretchDirection="DownOnly" Margin="10">
-                                                <TextBlock Text="{Binding HayomYom}"
-                                                           Style="{StaticResource LearnValue}"
-                                                           MaxWidth="700"
-                                                           TextWrapping="Wrap"
-                                                           TextAlignment="Center"
-                                                           HorizontalAlignment="Center"
-                                                           VerticalAlignment="Center"
-                                                           FontStyle="Italic"/>
+                                                <TextBlock Text="{Binding Rambam1Perek}" Style="{StaticResource LearnValue}"
+                                                            MaxWidth="500" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                             </Viewbox>
                                         </DockPanel>
                                     </Border>
@@ -390,6 +384,41 @@
                                         </DockPanel>
                                     </Border>
                                 </UniformGrid>
+                            </Grid>
+                            <!-- עמוד 4 — היום יום במסך מלא -->
+                            <Grid>
+                                <Grid.Style>
+                                    <Style TargetType="Grid">
+                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding IsLearningPage4}" Value="True">
+                                                <Setter Property="Visibility" Value="Visible"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Grid.Style>
+                                <Border Style="{StaticResource AnimatedCard}" Margin="20">
+                                    <DockPanel>
+                                        <TextBlock DockPanel.Dock="Top"
+                                                   Text="✡ היום יום"
+                                                   Style="{StaticResource LearnLabel}"
+                                                   FontSize="48"
+                                                   HorizontalAlignment="Center"
+                                                   Margin="0,10,0,20"/>
+                                        <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                                            <TextBlock Text="{Binding HayomYom}"
+                                                       Style="{StaticResource LearnValue}"
+                                                       FontSize="36"
+                                                       FontStyle="Italic"
+                                                       TextWrapping="Wrap"
+                                                       TextAlignment="Center"
+                                                       HorizontalAlignment="Center"
+                                                       VerticalAlignment="Center"
+                                                       Margin="60,20,60,40"
+                                                       LineHeight="56"/>            
+                                        </ScrollViewer>
+                                    </DockPanel>
+                                </Border>
                             </Grid>
 
                             <!-- ===== תזכורת ===== -->
@@ -520,7 +549,7 @@
                         </Grid>
 
                         <!-- ===== ZMANIM BAR ===== -->
-                        <Border Grid.Row="2" Style="{StaticResource Card}">
+                        <Border Grid.Row="2" Style="{StaticResource Card}" Padding="16,12">
                             <ItemsControl ItemsSource="{Binding Zmanim}">
                                 <ItemsControl.ItemsPanel>
                                     <ItemsPanelTemplate>
@@ -529,14 +558,20 @@
                                 </ItemsControl.ItemsPanel>
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate>
-                                        <StackPanel Margin="6,2">
-                                            <TextBlock Text="{Binding Name}" Style="{StaticResource Label}" FontSize="20"/>
-                                            <TextBlock Text="{Binding Time}" Style="{StaticResource Value}" FontSize="26" FontWeight="Bold"/>
+                                        <StackPanel Margin="10,4" HorizontalAlignment="Center">
+                                            <TextBlock Text="{Binding Name}" 
+                                                       Style="{StaticResource Label}" 
+                                                       FontSize="24"/>
+                                            <TextBlock Text="{Binding Time}" 
+                                                       Style="{StaticResource Value}" 
+                                                       FontSize="34" 
+                                                       FontWeight="Bold"/>
                                         </StackPanel>
                                     </DataTemplate>
                                 </ItemsControl.ItemTemplate>
                             </ItemsControl>
                         </Border>
+
                     </Grid>
                 </Grid>
             </Border>

@@ -67,22 +67,26 @@ namespace BeitKnessetDisplay
         private readonly SefariaService _sefaria = new SefariaService();
         private readonly ParashaSummaryService _parashaSummary = new ParashaSummaryService();
 
-        private int _learningPage = 0;          // 0,1,2
+        private int _learningPage = 0;          // 0,1,2,3
         private bool _isLearningPage1 = true;
         private bool _isLearningPage2 = false;
         private bool _isLearningPage3 = false;
+        private bool _isLearningPage4 = false;
 
         public bool IsLearningPage1 { get => _isLearningPage1; set => Set(ref _isLearningPage1, value); }
         public bool IsLearningPage2 { get => _isLearningPage2; set => Set(ref _isLearningPage2, value); }
         public bool IsLearningPage3 { get => _isLearningPage3; set => Set(ref _isLearningPage3, value); }
+        public bool IsLearningPage4 { get => _isLearningPage4; set => Set(ref _isLearningPage4, value); }
 
         public void AdvanceLearningPage()
         {
-            _learningPage = (_learningPage + 1) % 3;
+            _learningPage = (_learningPage + 1) % 4;
             IsLearningPage1 = _learningPage == 0;
             IsLearningPage2 = _learningPage == 1;
             IsLearningPage3 = _learningPage == 2;
+            IsLearningPage4 = _learningPage == 3;
         }
+
 
         // ===== עמודים מתחלפים =====
         // עמוד 0 = דשבורד. אח"כ: תזכורות, זמני תפילות, לזכות, לעילוי נשמה.
@@ -432,7 +436,7 @@ namespace BeitKnessetDisplay
 
             var hayomYomQuote = await BeitKnessetDisplay.Services.HayomYomService.GetTodayQuoteAsync();
             HayomYom = string.IsNullOrWhiteSpace(hayomYomQuote)
-                ? _learning.GetHayomYom(now)   // fallback אם הקריאה נכשלה
+                ? "פתגם היום יום לא זמין כעת"   // fallback אם הקריאה נכשלה
                 : hayomYomQuote;
 
             if (_jewish.IsShabbatMevarchim(now, out _, out var monthName))

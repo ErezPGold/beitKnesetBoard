@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.Net.Http;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -13,28 +14,96 @@ namespace BeitKnessetDisplay.Services
         {
             try
             {
-                var url = "https://www.chabad.org/calendar/view/day_cdo/aid/2263399/jewish/Hayom-Yom.htm";
-                var html = await _http.GetStringAsync(url);
+                var today = DateTime.Today;
+                var tdate = today.ToString("M/d/yyyy", CultureInfo.InvariantCulture);
 
-                // נסה לחלץ את גוף ה"היום יום" (Co_Body / class המכיל את הטקסט)
-                var m = Regex.Match(html,
-                    @"<div[^>]*class=""[^""]*(?:Co_Body|article-body|co_body)[^""]*""[^>]*>(.*?)</div>",
-                    RegexOptions.Singleline | RegexOptions.IgnoreCase);
+                var sourceUrl = $"https://he.chabad.org/dailystudy/hayomyom.asp?tdate={tdate}";
+                var url = "https://r.jina.ai/http://" + sourceUrl;
 
-                if (!m.Success) return "";
+                var markdown = await _http.GetStringAsync(url);
 
-                var text = Regex.Replace(m.Groups[1].Value, "<.*?>", " ");
-                text = System.Net.WebUtility.HtmlDecode(text);
-                text = Regex.Replace(text, @"\s+", " ").Trim();
+                var quote = ExtractQuote(markdown);
 
-                if (text.Length > 320) text = text.Substring(0, 320) + "…";
-                return text;
+                return string.IsNullOrWhiteSpace(quote) ? "" : quote;
             }
             catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine($"[HayomYom] {ex.Message}");
                 return "";
             }
+        }
+
+        private static string ExtractQuote(string markdown)
+        {
+            if (string.IsNullOrWhiteSpace(markdown))
+                return "";
+
+            var lines = markdown
+                .Replace("\r", "")
+                .Split('\n');
+
+            var startIndex = -1;
+
+            for (var i = 0; i < lines.Length; i++)
+            {
+                var line = CleanLine(lines[i]);
+
+                if (line.StartsWith("**שיעורים:**") || line.StartsWith("שיעורים:"))
+                {
+                    startIndex = i;
+                    break;
+                }
+            }
+
+            if (startIndex < 0)
+                return "";
+
+            var result = "";
+
+            for (var i = startIndex; i < lines.Length; i++)
+            {
+                var line = CleanLine(lines[i]);
+
+                if (string.IsNullOrWhiteSpace(line))
+                    continue;
+
+                if (line.Contains("אודות הספר") ||
+                    line.Contains("HaYom Yom") ||
+                    line.Contains("לרכישת הספר") ||
+                    line.StartsWith("שבת ") ||
+                    line.StartsWith("ראשון ") ||
+                    line.StartsWith("שני ") ||
+                    line.StartsWith("שלישי ") ||
+                    line.StartsWith("רביעי ") ||
+                    line.StartsWith("חמישי ") ||
+                    line.StartsWith("שישי "))
+                {
+                    if (result.Length > 80)
+                        break;
+                }
+
+                result += line + " ";
+            }
+
+            result = Regex.Replace(result, @"\s+", " ").Trim();
+
+            if (result.Length > 520)
+                result = result.Substring(0, 520).Trim() + "…";
+
+            return result;
+        }
+
+        private static string CleanLine(string line)
+        {
+            if (string.IsNullOrWhiteSpace(line))
+                return "";
+
+            line = Regex.Replace(line, @"!\[[^\]]*\]\([^)]+\)", "");
+            line = Regex.Replace(line, @"\[(.*?)\]\([^)]+\)", "$1");
+            line = line.Replace("**", "");
+            line = Regex.Replace(line, @"\s+", " ").Trim();
+
+            return line;
         }
     }
 }
